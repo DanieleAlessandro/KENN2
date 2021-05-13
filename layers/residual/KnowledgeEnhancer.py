@@ -1,5 +1,5 @@
 import tensorflow as tf
-from layers.residual.ClauseEnhancer import ClauseEnhancer
+from KENN2.layers.residual.ClauseEnhancer import ClauseEnhancer
 
 
 class KnowledgeEnhancer(tf.keras.layers.Layer):
@@ -20,10 +20,11 @@ class KnowledgeEnhancer(tf.keras.layers.Layer):
         An example:
            _:nDog,Animal
 
+        :param initial_clause_weight: the initial sign to the clause weight. Used if the clause weight is learned.
+
         """
 
         super(KnowledgeEnhancer, self).__init__(**kwargs)
-
         self.predicates = predicates
         self.clauses = clauses
         self.initial_clause_weight = initial_clause_weight
@@ -46,8 +47,11 @@ class KnowledgeEnhancer(tf.keras.layers.Layer):
         :param inputs: the tensor containing predicates' pre-activation values for many entities
         :return: final delta values"""
 
-        deltas = []
+        #deltas_list will be the list of deltas for each clause
+        # e.g. deltas_list[0] are the deltas relative to the first clause.
+        deltas_list = []
         for clause in self.clause_enhancers:
-            deltas.append(clause(inputs))
+            deltas_list.append(clause(inputs))
 
-        return tf.add_n(deltas)
+        return tf.add_n(deltas_list), deltas_list
+ 

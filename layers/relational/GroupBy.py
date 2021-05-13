@@ -36,4 +36,5 @@ class GroupBy(tf.keras.layers.Layer):
         b = deltas[:, 2 * self.n_unary:]
         shape = tf.shape(unary)
 
-        return unary + tf.scatter_nd(index1, ux, shape) + tf.scatter_nd(index2, uy, shape), binary + b
+        return tf.scatter_nd(index1, ux, shape) + tf.scatter_nd(index2, uy, shape), b
+    

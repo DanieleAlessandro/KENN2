@@ -32,4 +32,10 @@ class Join(tf.keras.layers.Layer):
 
         index1 = tf.squeeze(index1)
         index2 = tf.squeeze(index2)
+
+        # For the case where index1 and index2 were of length 1, tf.squeeze will make their rank = 0
+        if index1.shape.rank == 0 and index2.shape.rank == 0:
+            index1 = tf.reshape(index1, (1,))
+            index2 = tf.reshape(index2, (1,))
+
         return tf.concat([tf.gather(unary, index1, axis=0), tf.gather(unary, index2, axis=0), binary], axis=1)

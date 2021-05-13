@@ -1,7 +1,8 @@
 import tensorflow as tf
-from layers.residual.KnowledgeEnhancer import KnowledgeEnhancer
-from layers.relational.Join import Join
-from layers.relational.GroupBy import GroupBy
+import numpy as np
+from KENN2.layers.residual.KnowledgeEnhancer import KnowledgeEnhancer
+from KENN2.layers.relational.Join import Join
+from KENN2.layers.relational.GroupBy import GroupBy
 
 
 class RelationalKENN(tf.keras.layers.Layer):
@@ -45,9 +46,11 @@ class RelationalKENN(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         if len(self.unary_clauses) != 0:
-            self.unary_ke = KnowledgeEnhancer(self.unary_predicates, self.unary_clauses, initial_clause_weight=self.initial_clause_weight)
+            self.unary_ke = KnowledgeEnhancer(
+                self.unary_predicates, self.unary_clauses, initial_clause_weight=self.initial_clause_weight)
         if len(self.binary_clauses) != 0:
-            self.binary_ke = KnowledgeEnhancer(self.binary_predicates, self.binary_clauses, initial_clause_weight=self.initial_clause_weight)
+            self.binary_ke = KnowledgeEnhancer(
+                self.binary_predicates, self.binary_clauses, initial_clause_weight=self.initial_clause_weight)
 
             self.join = Join()
             self.group_by = GroupBy(self.n_unary)
@@ -61,29 +64,32 @@ class RelationalKENN(tf.keras.layers.Layer):
         :param binary: the tensor with binary predicates pre-activations
         :param index1: a vector containing the indices of the first object
         of the pair referred by binary tensor
-        :param index1: a vector containing the indices of the second object
+        :param index2: a vector containing the indices of the second object
         of the pair referred by binary tensor
         """
 
         if len(self.unary_clauses) != 0:
-            u = unary + self.unary_ke(unary)
+            deltas_sum, deltas_u_list = self.unary_ke(unary)
+            u = unary + deltas_sum
         else:
             u = unary
+            deltas_u_list = tf.expand_dims(tf.zeros(unary.shape), axis=0)
 
-        if len(self.binary_clauses) != 0:
+        if len(self.binary_clauses) != 0 and len(binary) != 0:
             joined_matrix = self.join(u, binary, index1, index2)
-            deltas = self.binary_ke(joined_matrix)
+            deltas_sum, deltas_b_list = self.binary_ke(joined_matrix)
 
-            up, bp = self.group_by(u, binary, deltas, index1, index2)
+            delta_up, delta_bp = self.group_by(
+                u, binary, deltas_sum, index1, index2)
         else:
-            up = u
-            bp = binary
+            delta_up = tf.zeros(u.shape)
+            delta_bp = tf.zeros(binary.shape)
 
-        return self.activation(up), self.activation(bp)
+        return self.activation(u + delta_up), self.activation(binary + delta_bp)
 
     def get_config(self):
         config = super(RelationalKENN, self).get_config()
-        config.update({'unary_predicates':self.unary_predicates})
+        config.update({'unary_predicates': self.unary_predicates})
         config.update({'unary_clauses': self.unary_clauses})
         config.update({'binary_predicates': self.binary_predicates})
         config.update({'binary_clauses': self.binary_clauses})

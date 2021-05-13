@@ -1,5 +1,5 @@
 import tensorflow as tf
-from layers.residual.KnowledgeEnhancer import KnowledgeEnhancer
+from KENN2.layers.residual.KnowledgeEnhancer import KnowledgeEnhancer
 
 
 class Kenn(tf.keras.layers.Layer):
