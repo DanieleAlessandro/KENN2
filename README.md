@@ -1,8 +1,8 @@
 # KENN: Knowledge Enhanced Neural Networks
 
-KENN2 (Knowledge Enhanced Neural Networks 2.0) is a library for Python 3 built on top of TensorFlow 2 that allows you modify neural networks models by providing logical knowledge in the form of a set of universally quantified FOL clauses. It does so by adding a new final layer, called **Knowledge Enhancer (KE)**, to the existing neural network. The KE changes the original predictions of the standard neural network enforcing the satisfaction of the knowledge. Additionally, it contains **clause weights**, learnable parameters which represent the strength of each clause.
+KENN2 (Knowledge Enhanced Neural Networks 2.0) is a library for Python 3 built on top of TensorFlow 2 that allows you to modify neural network models by providing logical knowledge in the form of a set of universally quantified FOL clauses. It does so by adding a new final layer, called **Knowledge Enhancer (KE)**, to the existing neural network. The KE changes the original predictions of the standard neural network enforcing the satisfaction of the knowledge. Additionally, it contains **clause weights**, learnable parameters which represent the strength of each clause.
 
-**NB:** version 1.0 of KENN was released for python 2.7 and TensorFlow 1.x and it is available at [KENN v1.0](https://github.com/DanieleAlessandro/KENN). Notice that this version is not backward compatible. Additionally, this implementation of KENN can work with relational domains, meaning that one can use also binary predicates to express logical rules which involve the relationship between two objects.
+**NB:** version 1.0 of KENN was released for Python 2.7 and TensorFlow 1.x and it is available at [KENN v1.0](https://github.com/DanieleAlessandro/KENN). Notice that this version is not backward compatible. Additionally, this implementation of KENN can work with relational domains, meaning that one can use also binary predicates to express logical rules which involve the relationship between two objects.
 
 This is an implementation of the model presented in our paper:
 [Knowledge Enhanced Neural Networks](https://link.springer.com/chapter/10.1007/978-3-030-29908-8_43).
@@ -43,7 +43,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
 # Import parser for the knowledge file
-from kenn.parsers import unary_parser
+from KENN2.parsers import unary_parser
 
 model = keras.Sequential([
     Dense(100, activation="relu", name="layer1"), Dense(50, activation="relu", name="layer2"), # Last NN layer
@@ -73,7 +73,7 @@ from KENN2.parsers import unary_parser
 unary_parser(’knowledge file path’,activation=tf.nn.sigmoid)
 ```
 
-The `unary_parser` function takes as input the path of the file containing the logical constraints and the activation function to be used. It returns a keras layer which can be stacked on top of a keras model and updates the predictions based on the content of the knowledge base file.
+The `unary_parser` function takes as input the path of the file containing the logical constraints and the activation function to be used. It returns a Keras layer which can be stacked on top of a Keras model and updates the predictions based on the content of the knowledge base file.
 
 Following, an example of knowledge base file:
 
@@ -102,7 +102,7 @@ and it tells us that a dog should also be an animal. In this case, the clause we
 
 KENN 2.0 provides extra features to work with relational data, meaning that it supports also logical knowledge in the form of clauses containing binary predicates. A typical case of relational data can be a Citation Network of scientific publications, or a Social Network: in those examples the binary predicates would be _Cite(x,y)_, and _Friend(x,y)_ respectively, which are represented by the edges of the graph.
 
-Similarly to the previous case, the first step is to import a parser, this time the parser need to read a knowledge file which contains binary predicates:
+Similarly to the previous case, the first step is to import a parser. This time the parser needs to read a knowledge file which contains binary predicates:
 
 ```python
 from KENN2.parsers import relational_parser
@@ -114,9 +114,9 @@ As before, the `relational_parser` is a function which returns a layer that inje
 
 The content of the knowledge file is similar to the previous case, with some notable changes:
 In the previous case, the first row was a list of predicates. Now, there are two rows: the first containing the list of unary predicates, the second containing the binary predicates.
-The clauses are also split in two groups: the first group contains only unary predicates, the second both unary and binary predicates. The two groups are separated by a row by the `>` symbol.
+The clauses are also split in two groups: the first group contains only unary predicates, the second both unary and binary predicates. The two groups are separated by a row containing the `>` symbol.
 
-Unary predicates are defined on a single variable (e.g. _Dog(x)_), binary predicates on two variables separated by a dot (e.g. _Friends(x.y)_)
+Unary predicates are defined on a single variable (e.g. _Dog(x)_), binary predicates on two variables separated by a dot (e.g. _Friends(x.y)_).
 Following an example of a relational knowledge file:
 
 ```
@@ -128,7 +128,7 @@ Friends
 :nFriends(x.y),nSmoker(x),Smoker(y)
 ```
 
-The first row specifies that there are two unary predicates: Smoker and Cancer. Second row specifies the binary predicates, which in this case is one: Friends. The first clause encodes the fact that a smoker has also cancer (note that the rules does not represent hard constraints) and the second, which contains also the binary predicate, expresses the idea that friends tend to have similar smoking habits.
+The first row specifies that there are two unary predicates: Smoker and Cancer. Second row specifies the binary predicates, which in this case is one: Friends. The first clause encodes the fact that a smoker also has cancer (note that the rules does not represent hard constraints) and the second, which contains also the binary predicate, expresses the idea that friends tend to have similar smoking habits.
 
 ## License
 
