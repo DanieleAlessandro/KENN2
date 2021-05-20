@@ -35,7 +35,7 @@ pip install KENN2
 
 ## Getting started: A simple model with Keras and KENN
 
-KENN 2.0 allows you to easily add KENN layers to Sequential Keras models. To add the knowledge to a keras model it is sufficient to add a new layer:
+KENN 2.0 allows you to easily add KENN layers to Keras models. To add the knowledge to a keras model it is sufficient to add a new layer:
 
 ```python
 import tensorflow as tf
@@ -73,12 +73,13 @@ from KENN2.parsers import unary_parser
 unary_parser(’knowledge file path’,activation=tf.nn.sigmoid)
 ```
 
-The `unary_parser` function takes as input the path of the file containing the logical constraints and the activation function to be used. It returns a Keras layer which can be stacked on top of a Keras model and updates the predictions based on the content of the knowledge base file.
+The `unary_parser` function takes as input the path of the file containing the logical constraints and the activation function to be used. It returns a Keras layer which can be stacked on top of a Keras model. Such layer updates the predictions based on the content of the knowledge base file.
 
 Following, an example of knowledge base file:
 
 ```
 Dog,Cat,Animal,Car,Truck,Chair
+
 1.5:nDog,Animal
 _:nCat,Animal
 2.0:nDog,nCat
@@ -95,12 +96,12 @@ Each clause is in a separate row and must be written respecting this properties:
 - There shouldn't be spaces.
 
 Additionally, each clause must be preceded by a positive weight that represents the strength of the clause. More precisely, the weight could be a **numeric value** or an **underscore**: in the first case, the weight is fixed and determined by the specified value, in the second case the weight is learned during training. For example, the third line represents the clause
-_¬Dog(x) ˅ Animal(x)_
+<a href="https://www.codecogs.com/eqnedit.php?latex=\lnot&space;Dog&space;\lor&space;Animal" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lnot&space;Dog&space;\lor&space;Animal" title="\lnot Dog \lor Animal" /></a>
 and it tells us that a dog should also be an animal. In this case, the clause weight is fixed to the value 1.5. A more interesting clause is the last one, that tells us that in our domain only cats and dogs are animals. Moreover, the corresponding weight is learned and if the constraint is not satisfied in the training set, KENN learns to ignore it.
 
 ## Working with relational data
 
-KENN 2.0 provides extra features to work with relational data, meaning that it supports also logical knowledge in the form of clauses containing binary predicates. A typical case of relational data can be a Citation Network of scientific publications, or a Social Network: in those examples the binary predicates would be _Cite(x,y)_, and _Friend(x,y)_ respectively, which are represented by the edges of the graph.
+KENN 2.0 provides extra features to work with relational data, meaning that it supports also clauses containing binary predicates. Typical cases of relational data can be a Citation Network of scientific publications or a Social Network: in those examples the binary predicates would be _Cite(x,y)_, and _Friend(x,y)_ respectively, which represent the edges of the graph.
 
 Similarly to the previous case, the first step is to import a parser. This time the parser needs to read a knowledge file which contains binary predicates:
 
@@ -110,7 +111,7 @@ from KENN2.parsers import relational_parser
 
 As before, the `relational_parser` is a function which returns a layer that injects the logic into the model.
 
-**N.B:** Currently, KENN is not compatible with Keras Sequential models. It can still be used without any issues using Tensorflow model subclassing.
+**N.B:** Currently, KENN is not compatible with Keras Sequential models. It can still be used without any issues using standard Tensorflow code.
 
 The content of the knowledge file is similar to the previous case, with some notable changes:
 In the previous case, the first row was a list of predicates. Now, there are two rows: the first containing the list of unary predicates, the second containing the binary predicates.
@@ -123,16 +124,16 @@ Following an example of a relational knowledge file:
 Smoker,Cancer
 Friends
 
-:nSmoker(x),Cancer(x)
+_:nSmoker(x),Cancer(x)
 >
-:nFriends(x.y),nSmoker(x),Smoker(y)
+_:nFriends(x.y),nSmoker(x),Smoker(y)
 ```
 
 The first row specifies that there are two unary predicates: Smoker and Cancer. Second row specifies the binary predicates, which in this case is one: Friends. The first clause encodes the fact that a smoker also has cancer (note that the rules does not represent hard constraints) and the second, which contains also the binary predicate, expresses the idea that friends tend to have similar smoking habits.
 
 ## License
 
-Copyright (c) 2019, Daniele Alessandro, Serafini Luciano
+Copyright (c) 2019, Daniele Alessandro, Mazzieri Riccardo, Serafini Luciano
 All rights reserved.
 
 Licensed under the BSD 3-Clause License.
