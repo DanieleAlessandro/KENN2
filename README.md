@@ -101,7 +101,7 @@ and it tells us that a dog should also be an animal. In this case, the clause we
 
 ## Working with relational data
 
-KENN 2.0 provides extra features to work with relational data, meaning that it supports also clauses containing binary predicates. Typical cases of relational data can be a Citation Network of scientific publications or a Social Network: in those examples the binary predicates would be _Cite(x,y)_, and _Friend(x,y)_ respectively, which represent the edges of the graph.
+KENN 2.0 provides extra features to work with relational data, meaning that it supports also clauses containing binary predicates. Typical cases of relational data can be a Citation Network of scientific publications or a Social Network: in those examples the binary predicates would be _Cite(x,y)_, and _Friend(x,y)_ respectively, which represent the edges of the graph. In the following, a very simple presentation of KENN for relational data. For a deeper explanation, please check [our tutorial](https://github.com/rmazzier/KENN-Relational-Tutorial/tree/main) on the CiteSeer dataset.
 
 Similarly to the previous case, the first step is to import a parser. This time the parser needs to read a knowledge file which contains binary predicates:
 
