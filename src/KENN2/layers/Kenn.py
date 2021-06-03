@@ -46,7 +46,7 @@ class Kenn(tf.keras.layers.Layer):
         :param inputs: the tensor containing predicates' pre-activation values for many entities
         :return: final preactivations"""
 
-        deltas = self.knowledge_enhancer(inputs)
+        deltas, _ = self.knowledge_enhancer(inputs)
 
         return self.activation(inputs + deltas)
 
