@@ -4,7 +4,7 @@ from KENN2.layers.residual.KnowledgeEnhancer import KnowledgeEnhancer
 
 class Kenn(tf.keras.layers.Layer):
 
-    def __init__(self, predicates, clauses, activation=lambda x: x, initial_clause_weight=0.5, **kwargs):
+    def __init__(self, predicates, clauses, activation=lambda x: x, initial_clause_weight=0.5, save_training_data=False, **kwargs):
         """Initialize the knowledge base.
 
         :param predicates: a list of predicates names
@@ -36,7 +36,8 @@ class Kenn(tf.keras.layers.Layer):
         :param input_shape: the input shape
         """
 
-        self.knowledge_enhancer = KnowledgeEnhancer(self.predicates, self.clauses, self.initial_clause_weight)
+        self.knowledge_enhancer = KnowledgeEnhancer(
+            self.predicates, self.clauses, self.initial_clause_weight)
 
         super(Kenn, self).build(input_shape)
 
@@ -52,9 +53,9 @@ class Kenn(tf.keras.layers.Layer):
 
     def get_config(self):
         config = super(Kenn, self).get_config()
-        config.update({'predicates':self.predicates})
-        config.update({'clauses':self.clauses})
-        config.update({'activation':self.activation})
-        config.update({'initial_clause_weight':self.initial_clause_weight})
+        config.update({'predicates': self.predicates})
+        config.update({'clauses': self.clauses})
+        config.update({'activation': self.activation})
+        config.update({'initial_clause_weight': self.initial_clause_weight})
         # config['output_size'] =  # say self. _output_size  if you store the argument in __init__
         return config

@@ -37,4 +37,3 @@ class GroupBy(tf.keras.layers.Layer):
         shape = tf.shape(unary)
 
         return tf.scatter_nd(index1, ux, shape) + tf.scatter_nd(index2, uy, shape), b
-    
