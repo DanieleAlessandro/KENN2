@@ -17,7 +17,7 @@ def unary_parser(knowledge_file, activation=lambda x: x, initial_clause_weight=0
 
     predicates = predicates_string[:-1].split(',')
 
-    return Kenn(predicates, clauses, activation, initial_clause_weight, save_training_data=False, **kwargs)
+    return Kenn(predicates, clauses, activation, initial_clause_weight, save_training_data, **kwargs)
 
 
 def unary_parser_ke(knowledge_file, initial_clause_weight=0.5, **kwargs):

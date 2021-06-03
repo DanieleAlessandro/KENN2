@@ -51,7 +51,11 @@ class KnowledgeEnhancer(tf.keras.layers.Layer):
         # deltas_list will be the list of deltas for each clause
         # e.g. deltas_list[0] are the deltas relative to the first clause.
         deltas_list = []
+        weights = []
         for clause in self.clause_enhancers:
             deltas_list.append(clause(inputs))
+            weights.append(clause.clause_weight.numpy()[0][0])
 
-        return tf.add_n(deltas_list), deltas_list
+            deltas_data = [deltas_list, weights]
+
+        return tf.add_n(deltas_list), deltas_data

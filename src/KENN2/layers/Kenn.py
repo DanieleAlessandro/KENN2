@@ -28,6 +28,7 @@ class Kenn(tf.keras.layers.Layer):
         self.clauses = clauses
         self.activation = activation
         self.initial_clause_weight = initial_clause_weight
+        self.save_training_data = save_training_data
         self.knowledge_enhancer = None
 
     def build(self, input_shape):
@@ -47,9 +48,12 @@ class Kenn(tf.keras.layers.Layer):
         :param inputs: the tensor containing predicates' pre-activation values for many entities
         :return: final preactivations"""
 
-        deltas, _ = self.knowledge_enhancer(inputs)
+        deltas, deltas_list = self.knowledge_enhancer(inputs)
 
-        return self.activation(inputs + deltas)
+        if self.save_training_data:
+            return self.activation(inputs + deltas), deltas_list
+        else:
+            return self.activation(inputs + deltas)
 
     def get_config(self):
         config = super(Kenn, self).get_config()
