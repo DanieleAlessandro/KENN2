@@ -8,7 +8,7 @@ class ClauseEnhancer(tf.keras.layers.Layer):
     """Clause Enhancer layer
     """
 
-    def __init__(self, available_predicates, clause_string, initial_clause_weight):
+    def __init__(self, available_predicates, clause_string, initial_clause_weight, save_training_data=False):
         """Initialize the clause.
         :param available_predicates: the list of all possible literals in a clause
         :param clause_string: a string representing a conjunction of literals. The format should be:
@@ -58,6 +58,7 @@ class ClauseEnhancer(tf.keras.layers.Layer):
 
         self.signs = np.array(signs, dtype=np.float32)
         self.clause_weight = None
+        self.save_training_data = save_training_data
 
     def build(self, input_shape):
         """Build the layer
@@ -99,4 +100,7 @@ class ClauseEnhancer(tf.keras.layers.Layer):
         scattered_delta = tf.scatter_nd(self.scatter_literal_indices, tf.transpose(
             delta), tf.reverse(tf.shape(inputs), [0]))
 
-        return tf.transpose(scattered_delta)
+        if self.save_training_data:
+            return tf.transpose(scattered_delta), delta
+        else:
+            return tf.transpose(scattered_delta)
