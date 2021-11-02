@@ -77,7 +77,7 @@ class RelationalKENN(tf.keras.layers.Layer):
 
         if len(self.binary_clauses) != 0 and len(binary) != 0:
             joined_matrix = self.join(u, binary, index1, index2)
-            deltas_sum, deltas_b_list = self.binary_ke(joined_matrix)
+            deltas_sum = self.binary_ke(joined_matrix)
 
             delta_up, delta_bp = self.group_by(
                 u, binary, deltas_sum, index1, index2)

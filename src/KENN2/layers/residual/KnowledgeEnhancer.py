@@ -51,21 +51,18 @@ class KnowledgeEnhancer(tf.keras.layers.Layer):
 
         # scatter_deltas_list will be the list of deltas for each clause
         # e.g. scatter_deltas_list[0] are the deltas relative to the first clause.
-        scatter_deltas_list = []
-        light_deltas_list = []
-        weights = []
-        for clause in self.clause_enhancers:
-            if self.save_training_data:
-                scattered_delta, delta = clause(inputs)
-                scatter_deltas_list.append(scattered_delta)
-                light_deltas_list.append(delta)
-                weights.append(clause.clause_weight.numpy()[0][0])
-            else:
-                scattered_delta = clause(inputs)
-                scatter_deltas_list.append(scattered_delta)
 
-        if self.save_training_data:
-            deltas_data = [light_deltas_list, weights]
-            return tf.add_n(scatter_deltas_list), deltas_data
-        else:
-            return tf.add_n(scatter_deltas_list)
+        deltas_list = []
+        indexes_list = []
+
+        for clause in self.clause_enhancers:
+            delta, indexes = clause(inputs)
+
+            deltas_list.append(delta)
+            indexes_list.append(indexes)
+
+        all_deltas = tf.concat(deltas_list, axis=1)
+        all_indexes = tf.concat(indexes_list, axis=0)
+
+        return tf.transpose(tf.scatter_nd(all_indexes, tf.transpose(
+            all_deltas), tf.reverse(tf.shape(inputs), [0])))

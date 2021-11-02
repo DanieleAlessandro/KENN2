@@ -97,10 +97,4 @@ class ClauseEnhancer(tf.keras.layers.Layer):
 
         delta = self.signs * tf.nn.softmax(clause_matrix) * self.clause_weight
 
-        scattered_delta = tf.scatter_nd(self.scatter_literal_indices, tf.transpose(
-            delta), tf.reverse(tf.shape(inputs), [0]))
-
-        if self.save_training_data:
-            return tf.transpose(scattered_delta), delta
-        else:
-            return tf.transpose(scattered_delta)
+        return delta, self.scatter_literal_indices
