@@ -69,7 +69,7 @@ class RelationalKENN(tf.keras.layers.Layer):
         """
 
         if len(self.unary_clauses) != 0:
-            deltas_sum, deltas_u_list = self.unary_ke(unary)
+            deltas_sum = self.unary_ke(unary)
             u = unary + deltas_sum
         else:
             u = unary
