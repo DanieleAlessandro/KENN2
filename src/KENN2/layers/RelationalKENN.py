@@ -73,7 +73,6 @@ class RelationalKENN(tf.keras.layers.Layer):
             u = unary + deltas_sum
         else:
             u = unary
-            deltas_u_list = tf.expand_dims(tf.zeros(unary.shape), axis=0)
 
         if len(self.binary_clauses) != 0 and len(binary) != 0:
             joined_matrix = self.join(u, binary, index1, index2)
@@ -82,8 +81,8 @@ class RelationalKENN(tf.keras.layers.Layer):
             delta_up, delta_bp = self.group_by(
                 u, binary, deltas_sum, index1, index2)
         else:
-            delta_up = tf.zeros(u.shape)
-            delta_bp = tf.zeros(binary.shape)
+            delta_up = tf.zeros_like(u)
+            delta_bp = tf.zeros_like(binary)
 
         return self.activation(u + delta_up), self.activation(binary + delta_bp)
 
